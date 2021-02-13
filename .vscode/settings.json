@@ -13,5 +13,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/.next/**": true
-    }
+    },
+    "editor.tabSize": 2
 }
