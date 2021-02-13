@@ -29,5 +29,8 @@ jobs:
         path: ${{ github.workspace }}/.next/cache
         key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Check Prettier Checks
+      run: yarn prettier-checks
+
     - name: Build
       run: yarn build
