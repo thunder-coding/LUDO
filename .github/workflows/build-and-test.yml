@@ -22,7 +22,7 @@ jobs:
           ${{ runner.os }}-yarn-
     
     - name: Install dependencies
-      run: yarn
+      run: yarn --prefer-offline
 
     - uses: actions/cache@v2
       with:
