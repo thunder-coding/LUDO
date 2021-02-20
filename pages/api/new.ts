@@ -91,7 +91,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		console.log(newGame)
 	}
 
-	await Mongo.db("production").collection("main").insertOne(newGame)
-	
+	await Mongo.db('production').collection('main').insertOne(newGame)
+
 	if (!res.writableEnded) res.status(200).json(new VisibleGame(newGame))
 }
