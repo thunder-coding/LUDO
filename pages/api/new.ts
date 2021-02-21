@@ -10,7 +10,7 @@ function generateToken() {
 
 /** This object represents a token */
 interface Token {
-	/** 
+	/**
 	 * The unique token number of each token held by the player
 	 * <br>
 	 * Range 1 to 4
@@ -47,7 +47,7 @@ interface Player {
 interface VisiblePlayer {
 	/**
 	 * The unique id of the player
-	 * 
+	 *
 	 * Range: 1 to 4
 	 */
 	_id: number
@@ -59,9 +59,9 @@ interface VisiblePlayer {
 class Game {
 	/** The most number of player which join the current game */
 	player_limit: number
-	/** 
+	/**
 	 * This represents the Authorisation Token of the owner of the game (The one who started it)
-	 * 
+	 *
 	 * It has been stored seperately because the admin should have much more permissions than other players
 	 */
 	admin_token: string
