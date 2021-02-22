@@ -67,10 +67,13 @@ class Game {
 	admin_token: string
 	/** This array represents all the players in the game */
 	player: Player[]
+	/** The timestamp when the game was created. This is to auto clean old game records from the database */
+	createdAt: Date
 	constructor(player_limit: number = 2, Res: NextApiResponse) {
 		if (player_limit > 4 || player_limit < 2) {
 			throw new Error('Maximum player limit should be within 2-4.')
 		}
+		this.createdAt = new Date()
 		this.player_limit = player_limit
 		this.admin_token = generateToken()
 		this.player = []
@@ -134,6 +137,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 
 	await Mongo.db('production').collection('main').insertOne(newGame)
+
+	// We don't need to run this everytime new game is created. only running this once will create a background process in mongod which will automatically drop stale data in database
+	// await Mongo.db('production').collection('main').createIndex({createdAt: 1}, {expireAfterSeconds: 86400})
 
 	if (!res.writableEnded) res.status(200).json(new VisibleGame(newGame))
 }
