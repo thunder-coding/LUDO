@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { MongoClient } from 'mongodb'
 
-function generateToken() {
+function randomString(length: number) {
 	let token = ''
-	for (let i = 0; i < 25; i++)
+	for (let i = 0; i < length; i++)
 		token += Math.floor(Math.random() * 36).toString(36)
 	return token
 }
@@ -57,6 +57,8 @@ interface VisiblePlayer {
 
 /** This represents all the data that is to be stored by MongoDB */
 class Game {
+	/** The unique id of the game as stored in database */
+	_id: string
 	/** The most number of player which join the current game */
 	player_limit: number
 	/**
@@ -73,9 +75,10 @@ class Game {
 		if (player_limit > 4 || player_limit < 2) {
 			throw new Error('Maximum player limit should be within 2-4.')
 		}
+		this._id = randomString(6)
 		this.createdAt = new Date()
 		this.player_limit = player_limit
-		this.admin_token = generateToken()
+		this.admin_token = randomString(25)
 		this.player = []
 		this.player.push({
 			_id: 1,
@@ -93,11 +96,14 @@ class Game {
 
 /** This represents Game as it should be visible to the client, hiding all the AuthorisationTokens */
 class VisibleGame {
+	/** The unique id of the game as stored in database */
+	_id: string
 	/** The most number of player which join the current game */
 	player_limit: number
 	/** This array represents all the players in the game */
 	player: VisiblePlayer[]
 	constructor(game: Game) {
+		this._id = game._id
 		this.player_limit = game.player_limit
 		this.player = []
 		game.player.forEach((player) => {
