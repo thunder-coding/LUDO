@@ -139,7 +139,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	let newGame: Game = new Game(4, res)
 	try {
-		newGame = new Game(+req.body.player_limit, res)
+		newGame = new Game(+req.body.player_limit || 4, res)
 	} catch (e) {
 		res.statusCode = 400
 		res.json({ message: e.message })
