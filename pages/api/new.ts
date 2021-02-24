@@ -1,11 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { MongoClient } from 'mongodb'
 
-function randomString(length: number) {
-	let token = ''
-	for (let i = 0; i < length; i++)
-		token += Math.floor(Math.random() * 36).toString(36)
-	return token
+function randomString(length: number): string {
+	let randomStr = ''
+	let randomChar = ''
+	for (let i = 0; i < length; i++) {
+		randomChar = Math.floor(Math.random() * 36).toString(36)
+		randomChar = Math.round(Math.random())
+			? randomChar.toUpperCase()
+			: randomChar
+		randomStr += randomChar
+	}
+	return randomStr
 }
 
 /** This object represents a token */
