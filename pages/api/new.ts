@@ -133,13 +133,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	let newGame: Game = new Game(4, res)
 	try {
-		newGame = new Game(3, res)
+		newGame = new Game(+req.body.player_limit, res)
 	} catch (e) {
 		res.statusCode = 400
 		res.json({ message: e.message })
 		console.log(e)
-	} finally {
-		console.log(newGame)
 	}
 
 	await Mongo.db('production').collection('main').insertOne(newGame)
