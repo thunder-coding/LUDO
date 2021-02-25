@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prettier-checks": "prettier --check \"pages/**/*.{ts,tsx}\" \"styles/**/*.css\"",
-    "prettier-run": "prettier --write \"pages/**/*.{ts,tsx}\" \"styles/**/*.css\""
+    "prettier-checks": "prettier --check \"pages/**/*.{ts,tsx}\" \"styles/**/*.css\" \"lib/**/*.ts\" ",
+    "prettier-run": "prettier --write \"pages/**/*.{ts,tsx}\" \"styles/**/*.css\" \"lib/**/*.ts\" "
   },
   "dependencies": {
     "mongodb": "^3.6.4",

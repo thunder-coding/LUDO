@@ -1,123 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { MongoClient } from 'mongodb'
 
-function randomString(length: number): string {
-	let randomStr = ''
-	let randomChar = ''
-	for (let i = 0; i < length; i++) {
-		randomChar = Math.floor(Math.random() * 36).toString(36)
-		randomChar = Math.round(Math.random())
-			? randomChar.toUpperCase()
-			: randomChar
-		randomStr += randomChar
-	}
-	return randomStr
-}
-
-/** This object represents a token */
-interface Token {
-	/**
-	 * The unique token number of each token held by the player
-	 * <br>
-	 * Range 1 to 4
-	 */
-	_id: number
-	/**
-	 * The current position of the this token.
-	 *
-	 * Range:  -1 to 56
-	 *
-	 * -1 represents that the token has not yet started it's journey \
-	 *  0 represents that the token is on the first position relative to it's start
-	 */
-	position: number
-}
-
-/**This represents a player */
-interface Player {
-	/**
-	 * The unique id of the player
-	 *
-	 * Range: 1 to 4
-	 */
-	_id: number
-	/**
-	 * This authorisation token is required to perform validated requests like rolling the dice
-	 */
-	AuthorisationToken: string
-	/** This array represents all the token's owned by the player */
-	token: Token[]
-}
-
-/** This represents Player data as it should be visible to the client hiding the AuthorisationToken */
-interface VisiblePlayer {
-	/**
-	 * The unique id of the player
-	 *
-	 * Range: 1 to 4
-	 */
-	_id: number
-	/** This array represents all the tokens owned by the player */
-	token: Token[]
-}
-
-/** This represents all the data that is to be stored by MongoDB */
-class Game {
-	/** The unique id of the game as stored in database */
-	_id: string
-	/** The most number of player which join the current game */
-	player_limit: number
-	/**
-	 * This represents the Authorisation Token of the owner of the game (The one who started it)
-	 *
-	 * It has been stored seperately because the admin should have much more permissions than other players
-	 */
-	admin_token: string
-	/** This array represents all the players in the game */
-	player: Player[]
-	/** The timestamp when the game was created. This is to auto clean old game records from the database */
-	createdAt: Date
-	constructor(player_limit: number = 2, Res: NextApiResponse) {
-		if (player_limit > 4 || player_limit < 2) {
-			throw new Error('Maximum player limit should be within 2-4.')
-		}
-		this._id = randomString(6)
-		this.createdAt = new Date()
-		this.player_limit = player_limit
-		this.admin_token = randomString(25)
-		this.player = []
-		this.player.push({
-			_id: 1,
-			AuthorisationToken: this.admin_token,
-			token: [
-				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
-			],
-		})
-		return this
-	}
-}
-
-/** This represents Game as it should be visible to the client, hiding all the AuthorisationTokens */
-class VisibleGame {
-	/** The unique id of the game as stored in database */
-	_id: string
-	/** The most number of player which join the current game */
-	player_limit: number
-	/** This array represents all the players in the game */
-	player: VisiblePlayer[]
-	constructor(game: Game) {
-		this._id = game._id
-		this.player_limit = game.player_limit
-		this.player = []
-		game.player.forEach((player) => {
-			let { AuthorisationToken, ...xyz } = player
-			this.player.push(xyz)
-		})
-	}
-}
+import connect from '../../lib/connect'
+import { Game, VisibleGame } from '../../lib/Game'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method != 'POST') {
@@ -126,10 +10,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			.json({ message: `Method ${req.method} not allowed. Use only POST` })
 		return
 	}
-	const URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/test?retryWrites=true&w=majority`
-	const Mongo = new MongoClient(URI, { useUnifiedTopology: true })
 	try {
-		await Mongo.connect()
+		var Mongo = await connect()
 	} catch {
 		console.error('Database connection error')
 		res.setHeader('DB-Connection-Failed', '')
