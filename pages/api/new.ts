@@ -28,10 +28,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		console.log(e)
 	}
 
-	await Mongo.db('production').collection('main').insertOne(newGame)
+	await Mongo.db().collection('main').insertOne(newGame)
 
 	// We don't need to run this everytime new game is created. only running this once will create a background process in mongod which will automatically drop stale data in database
-	// await Mongo.db('production').collection('main').createIndex({createdAt: 1}, {expireAfterSeconds: 86400})
+	// await Mongo.db().collection('main').createIndex({createdAt: 1}, {expireAfterSeconds: 86400})
 
 	if (!res.writableEnded) res.status(200).json(new VisibleGame(newGame))
 }
