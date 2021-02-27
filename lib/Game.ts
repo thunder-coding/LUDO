@@ -2,6 +2,8 @@ import { NextApiResponse } from 'next'
 import { Player, VisiblePlayer } from './Player'
 import randomString from './randomString'
 
+import { TokenColor } from './enums'
+
 /** This represents all the data that is to be stored by MongoDB */
 export class Game {
 	/** The unique id of the game as stored in database */
@@ -28,7 +30,7 @@ export class Game {
 		this.admin_token = randomString(25)
 		this.player = []
 		this.player.push({
-			_id: 1,
+			color: TokenColor.RED,
 			AuthorisationToken: this.admin_token,
 			token: [
 				{ _id: 1, position: -1 },
