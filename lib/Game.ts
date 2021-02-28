@@ -34,9 +34,9 @@ export class Game {
 			AuthorisationToken: this.admin_token,
 			token: [
 				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
-				{ _id: 1, position: -1 },
+				{ _id: 2, position: -1 },
+				{ _id: 3, position: -1 },
+				{ _id: 4, position: -1 },
 			],
 		})
 		return this
